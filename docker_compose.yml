@@ -1,0 +1,21 @@
+verison: "3.8"
+services:
+  mysql:
+    image: mysql:8.0
+    volumes: 
+      - ./django_volume:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=myapp
+      - MYSQL_USER=user 
+      - MYSQL_PASSWORD=password
+    command: mysql -uroot -psecret -e "GRANT ALL PRIVILIGES ON myapp.* TO user;" -e "SET GLOBAL connect_timeout=28800;" -e "SET GLOBAL interactive_timeout=28800;" -e "SET GLOBAL wait_timeout=28800" -e "WITH GRANT OPTION" -e "FLUSH PRIVILIGES"
+    
+  python_app:
+    command: ./run.sh
+    ports:
+      - "8000:8000"
+    build:
+      dockerfile: .
+    depends_on:
+      - mysql
