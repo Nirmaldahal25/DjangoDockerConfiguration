@@ -1,0 +1,30 @@
+services:
+  mysql:
+    container_name: "mysql"
+    image: mysql:8.0
+    volumes: 
+      - django_volume:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=myapp
+      - MYSQL_USER=user 
+      - MYSQL_PASSWORD=password
+      - MYSQL_HOST=
+    # command: mysql -uroot -psecret -e "GRANT ALL PRIVILIGES ON myapp.* TO user;" -e "FLUSH PRIVILIGES;"
+    ports: 
+      - "3306:3306"
+
+  python_app:
+    image: "python_app_image"
+    container_name: "python_app_container"
+    command: "./run.sh"
+    ports:
+      - "8000:8000"
+    build:
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+
+volumes:
+  django_volume:
+    
